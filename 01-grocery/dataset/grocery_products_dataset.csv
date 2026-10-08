@@ -1,0 +1,151 @@
+Product_ID,Barcode_EAN13,Product_Name,Category,Brand,Price_INR,Quantity,Stock_Quantity,Manufacturer,Supplier,Expiry_Date,Manufacture_Date,MRP
+1,8900000000001,Rusks - Hennessy 1L,Soft Drinks,Bisleri,259,2L,159,Mfg_0,Supplier_H,2025-06-01,2024-01-01,310
+2,8900000000002,Noodles - Sprite 2kg,Hair Care,Mondelēz,683,400g,168,Mfg_1,Supplier_C,2025-06-02,2024-01-02,819
+3,8900000000003,Spreads - Kingfisher 200ml,Breakfast Drinks,Dettol,447,200ml,161,Mfg_2,Supplier_A,2025-06-03,2024-01-03,536
+4,8900000000004,Milk - Budweiser 137g,Tea & Coffee,Lipton,2175,650ml,42,Mfg_3,Supplier_H,2025-06-04,2024-01-04,2610
+5,8900000000005,Cereal - Lay's 650ml,Cereals & Grains,Dabur,780,600g,189,Mfg_4,Supplier_C,2025-06-05,2024-01-05,936
+6,8900000000006,Dal - Fanta 137g,Instant Noodles,Horlicks,277,50ml,101,Mfg_5,Supplier_B,2025-06-06,2024-01-06,332
+7,8900000000007,Rice - Budweiser 250ml,Beauty & Cosmetics,Amul,1994,600g,159,Mfg_6,Supplier_A,2025-06-07,2024-01-07,2392
+8,8900000000008,Vodka - Horlicks 200g,Frozen Foods,Cadbury,1087,250g,187,Mfg_7,Supplier_C,2025-06-08,2024-01-08,1304
+9,8900000000009,Soap - Lakme 250ml,Disinfectants,Lay's,245,40g,37,Mfg_8,Supplier_B,2025-06-09,2024-01-09,294
+10,8900000000010,Shampoo - Bagpiper 5L,Skin Care,Dettol,398,5kg,90,Mfg_9,Supplier_B,2025-06-10,2024-01-10,477
+11,8900000000011,Energy Drink - Bombay 2L,Instant Noodles,Absolut,772,500g,70,Mfg_10,Supplier_F,2025-06-11,2024-01-11,926
+12,8900000000012,Salt - Unilever 500g,Tea & Coffee,Britannia,1858,400g,14,Mfg_11,Supplier_A,2025-06-12,2024-01-12,2229
+13,8900000000013,Chips - Sprite 50ml,Biscuits & Cookies,Nestlé,2458,650ml,9,Mfg_12,Supplier_B,2025-06-13,2024-01-13,2949
+14,8900000000014,Rusks - Bisleri 400g,Bread & Bakery,Hennessy,633,1kg,127,Mfg_13,Supplier_F,2025-06-14,2024-01-14,759
+15,8900000000015,Water - Maggi 25 Bags,Disinfectants,Parle,1262,200g,78,Mfg_14,Supplier_C,2025-06-15,2024-01-15,1514
+16,8900000000016,Tea - Diageo 137g,Frozen Foods,Horlicks,587,70g,101,Mfg_15,Supplier_D,2025-06-16,2024-01-16,704
+17,8900000000017,Rice - Pepsi 1L,Alcoholic Beverages,Coca-Cola,2132,200ml,122,Mfg_16,Supplier_A,2025-06-17,2024-01-17,2558
+18,8900000000018,Chips - Colgate 1L,Frozen Foods,Colgate,444,400g,42,Mfg_17,Supplier_H,2025-06-18,2024-01-18,532
+19,8900000000019,Candy - Maggi 5L,Cereals & Grains,ITC,2160,1L,145,Mfg_18,Supplier_G,2025-06-19,2024-01-19,2592
+20,8900000000020,Cereal - Lay's 400g,Ghee & Oils,Fanta,773,1kg,163,Mfg_19,Supplier_G,2025-06-20,2024-01-20,927
+21,8900000000021,Rice - Himalaya 150g,Instant Noodles,Dabur,1339,150g,51,Mfg_20,Supplier_C,2025-06-21,2024-01-21,1606
+22,8900000000022,Ice Cream - Tata 150g,Chocolates & Candy,Amul,2155,5L,113,Mfg_21,Supplier_J,2025-06-22,2024-01-22,2586
+23,8900000000023,Whisky - Bisleri 4 pack,Tea & Coffee,Bagpiper,1368,650ml,184,Mfg_22,Supplier_J,2025-06-23,2024-01-23,1641
+24,8900000000024,Chocolate - Lipton 400g,Soft Drinks,Tata,2492,1kg,188,Mfg_23,Supplier_C,2025-06-24,2024-01-24,2990
+25,8900000000025,Ghee - Garnier 2L,Ghee & Oils,Saffola,456,40g,19,Mfg_24,Supplier_B,2025-06-25,2024-01-25,547
+26,8900000000026,Salt - Colgate 750ml,Soft Drinks,Himalaya,2027,10oz,161,Mfg_25,Supplier_A,2025-06-26,2024-01-26,2432
+27,8900000000027,Toothpaste - Lay's 137g,Beauty & Cosmetics,Garnier,1341,200g,140,Mfg_26,Supplier_G,2025-06-27,2024-01-27,1609
+28,8900000000028,Spices - Bisleri 1L,Biscuits & Cookies,Coca-Cola,258,1L,9,Mfg_27,Supplier_G,2025-06-28,2024-01-28,309
+29,8900000000029,Juice - Diageo 10oz,Juices & Drinks,Ferrero,175,200ml,161,Mfg_28,Supplier_B,2025-06-29,2024-01-29,210
+30,8900000000030,Malt - Hennessy 1L,Meat Alternatives,Absolut,1368,5kg,51,Mfg_29,Supplier_G,2025-06-30,2024-01-30,1641
+31,8900000000031,Wheat Atta - Bagpiper 2kg,Bread & Bakery,Lipton,1029,4 pack,72,Mfg_30,Supplier_H,2025-07-01,2024-01-31,1234
+32,8900000000032,Tea - Budweiser 100g,Ghee & Oils,Diageo,551,40g,80,Mfg_31,Supplier_A,2025-07-02,2024-02-01,661
+33,8900000000033,Noodles - Budweiser 200ml,Snacks,Coca-Cola,768,500ml,177,Mfg_32,Supplier_I,2025-07-03,2024-02-02,921
+34,8900000000034,Honey - Colgate 250g,Ice Cream,Ferrero,2138,250ml,134,Mfg_33,Supplier_G,2025-07-04,2024-02-03,2565
+35,8900000000035,Candy - Lakme 500g,Laundry & Cleaning,Unilever,2190,500g,159,Mfg_34,Supplier_C,2025-07-05,2024-02-04,2628
+36,8900000000036,Ice Cream - Ferrero 4 pack,Cereals & Grains,Cadbury,806,1kg,99,Mfg_35,Supplier_H,2025-07-06,2024-02-05,967
+37,8900000000037,Malt - Bombay 2kg,Cereals & Grains,Bombay,147,4 pack,119,Mfg_36,Supplier_G,2025-07-07,2024-02-06,176
+38,8900000000038,Tea - Colgate 250ml,Alcoholic Beverages,Pepsi,2241,150g,168,Mfg_37,Supplier_H,2025-07-08,2024-02-07,2689
+39,8900000000039,Chocolate - Lakme 2L,Soap & Bath,Bombay,1363,400g,40,Mfg_38,Supplier_F,2025-07-09,2024-02-08,1635
+40,8900000000040,Toothpaste - Budweiser 500g,Instant Noodles,Colgate,1885,40g,30,Mfg_39,Supplier_I,2025-07-10,2024-02-09,2262
+41,8900000000041,Candy - Lay's 150g,Snacks,Ferrero,78,70g,47,Mfg_0,Supplier_E,2025-07-11,2024-02-10,93
+42,8900000000042,Energy Drink - Patanjali 100g,Laundry & Cleaning,ITC,2110,100g,31,Mfg_1,Supplier_C,2025-07-12,2024-02-11,2532
+43,8900000000043,Candy - Parle 1L,Cereals & Grains,Unilever,1483,70g,73,Mfg_2,Supplier_C,2025-07-13,2024-02-12,1779
+44,8900000000044,Ghee - Unilever 100g,Cereals & Grains,Cadbury,214,5L,152,Mfg_3,Supplier_A,2025-07-14,2024-02-13,256
+45,8900000000045,Cookies - Diageo 600g,Dairy & Butter,Bombay,2183,250ml,15,Mfg_4,Supplier_H,2025-07-15,2024-02-14,2619
+46,8900000000046,Ghee - Ferrero 50ml,Disinfectants,Bagpiper,52,1L,78,Mfg_5,Supplier_B,2025-07-16,2024-02-15,62
+47,8900000000047,Salt - Everest 4 pack,Soap & Bath,Lakme,1916,100g,108,Mfg_6,Supplier_C,2025-07-17,2024-02-16,2299
+48,8900000000048,Ice Cream - Cadbury 40g,Snacks,Horlicks,2168,4 pack,42,Mfg_7,Supplier_H,2025-07-18,2024-02-17,2601
+49,8900000000049,Rum - Ferrero 5L,Chocolates & Candy,Himalaya,770,750ml,138,Mfg_8,Supplier_H,2025-07-19,2024-02-18,924
+50,8900000000050,Rum - Tata 500g,Snacks,Dove,2152,1kg,27,Mfg_9,Supplier_D,2025-07-20,2024-02-19,2582
+51,8900000000051,Toothpaste - Ferrero 500ml,Jams & Spreads,Sprite,2004,500g,51,Mfg_10,Supplier_D,2025-07-21,2024-02-20,2404
+52,8900000000052,Salt - Hennessy 400g,Biscuits & Cookies,Godrej,1945,200ml,94,Mfg_11,Supplier_E,2025-07-22,2024-02-21,2334
+53,8900000000053,Oil - Dove 2kg,Alcoholic Beverages,Sprite,909,400g,50,Mfg_12,Supplier_F,2025-07-23,2024-02-22,1090
+54,8900000000054,Shampoo - Bombay 200g,Ice Cream,Haldiram,369,500ml,111,Mfg_13,Supplier_E,2025-07-24,2024-02-23,442
+55,8900000000055,Ice Cream - Himalaya 250ml,Laundry & Cleaning,Parle,1729,200ml,144,Mfg_14,Supplier_G,2025-07-25,2024-02-24,2074
+56,8900000000056,Detergent - Rémy Martin 200ml,Beauty & Cosmetics,Saffola,290,250g,145,Mfg_15,Supplier_B,2025-07-26,2024-02-25,348
+57,8900000000057,Beer - Bagpiper 2kg,Juices & Drinks,Patanjali,1897,100g,108,Mfg_16,Supplier_G,2025-07-27,2024-02-26,2276
+58,8900000000058,Gin - ITC 10oz,Frozen Foods,Coca-Cola,676,1kg,194,Mfg_17,Supplier_J,2025-07-28,2024-02-27,811
+59,8900000000059,Energy Drink - Cadbury 50ml,Dairy & Butter,Pepsi,102,25 Bags,115,Mfg_18,Supplier_G,2025-07-29,2024-02-28,122
+60,8900000000060,Dal - Ferrero 1kg,Frozen Foods,Bisleri,681,650ml,108,Mfg_19,Supplier_A,2025-07-30,2024-02-29,817
+61,8900000000061,Noodles - Absolut 50ml,Disinfectants,Maggi,1979,100ml,64,Mfg_20,Supplier_G,2025-07-31,2024-03-01,2374
+62,8900000000062,Oats - Lakme 40g,Frozen Foods,Everest,70,500g,175,Mfg_21,Supplier_E,2025-08-01,2024-03-02,84
+63,8900000000063,Ice Cream - Budweiser 1L,Biscuits & Cookies,Garnier,1038,600g,104,Mfg_22,Supplier_C,2025-08-02,2024-03-03,1245
+64,8900000000064,Rum - Dove 650ml,Alcoholic Beverages,ITC,1499,100ml,72,Mfg_23,Supplier_C,2025-08-03,2024-03-04,1798
+65,8900000000065,Malt - Mondelēz 2kg,Personal Care,Unilever,613,250ml,137,Mfg_24,Supplier_D,2025-08-04,2024-03-05,735
+66,8900000000066,Rice - Unilever 5L,Breakfast Drinks,Godrej,691,200g,124,Mfg_25,Supplier_B,2025-08-05,2024-03-06,829
+67,8900000000067,Oats - Dabur 5L,Tea & Coffee,Kingfisher,1438,500ml,41,Mfg_26,Supplier_B,2025-08-06,2024-03-07,1725
+68,8900000000068,Rice - Britannia 150g,Frozen Foods,Haldiram,2290,5kg,76,Mfg_27,Supplier_A,2025-08-07,2024-03-08,2748
+69,8900000000069,Toothpaste - Parle 100g,Hair Care,Mondelēz,533,200g,131,Mfg_28,Supplier_E,2025-08-08,2024-03-09,639
+70,8900000000070,Wheat Atta - Coca-Cola 200g,Ice Cream,Lipton,2403,70g,110,Mfg_29,Supplier_D,2025-08-09,2024-03-10,2883
+71,8900000000071,Cola - Dove 1kg,Chocolates & Candy,Dove,1978,100g,96,Mfg_30,Supplier_J,2025-08-10,2024-03-11,2373
+72,8900000000072,Rum - Tata 600g,Soap & Bath,Godrej,1111,500g,35,Mfg_31,Supplier_B,2025-08-11,2024-03-12,1333
+73,8900000000073,Milk - Dabur 1kg,Ghee & Oils,Colgate,1763,50ml,126,Mfg_32,Supplier_C,2025-08-12,2024-03-13,2115
+74,8900000000074,Juice - Nestlé 70g,Tea & Coffee,Horlicks,1846,5L,141,Mfg_33,Supplier_G,2025-08-13,2024-03-14,2215
+75,8900000000075,Chocolate - Himalaya 150g,Health & Honey,Mondelēz,2306,50ml,55,Mfg_34,Supplier_G,2025-08-14,2024-03-15,2767
+76,8900000000076,Milk - Godrej 100g,Hair Care,Budweiser,2104,200ml,33,Mfg_35,Supplier_D,2025-08-15,2024-03-16,2524
+77,8900000000077,Tea - Himalaya 2L,Health & Honey,Bombay,1154,1L,44,Mfg_36,Supplier_E,2025-08-16,2024-03-17,1384
+78,8900000000078,Whisky - Unilever 70g,Tea & Coffee,Colgate,2271,650ml,45,Mfg_37,Supplier_E,2025-08-17,2024-03-18,2725
+79,8900000000079,Cereal - Coca-Cola 4 pack,Disinfectants,Bombay,2296,1kg,15,Mfg_38,Supplier_F,2025-08-18,2024-03-19,2755
+80,8900000000080,Dal - Coca-Cola 70g,Instant Noodles,Saffola,1089,600g,155,Mfg_39,Supplier_I,2025-08-19,2024-03-20,1306
+81,8900000000081,Rum - Amul 70g,Personal Care,Diageo,2407,250g,5,Mfg_0,Supplier_B,2025-08-20,2024-03-21,2888
+82,8900000000082,Malt - Lakme 5kg,Ghee & Oils,Colgate,116,5L,50,Mfg_1,Supplier_E,2025-08-21,2024-03-22,139
+83,8900000000083,Rusks - Bisleri 5kg,Laundry & Cleaning,Bombay,57,500g,105,Mfg_2,Supplier_C,2025-08-22,2024-03-23,68
+84,8900000000084,Wheat Atta - Haldiram 10oz,Juices & Drinks,Bombay,346,250ml,153,Mfg_3,Supplier_D,2025-08-23,2024-03-24,415
+85,8900000000085,Water - Kingfisher 100ml,Laundry & Cleaning,Parle,1059,25 Bags,94,Mfg_4,Supplier_J,2025-08-24,2024-03-25,1270
+86,8900000000086,Candy - Amul 2L,Soft Drinks,Saffola,1290,750ml,114,Mfg_5,Supplier_F,2025-08-25,2024-03-26,1548
+87,8900000000087,Cola - Britannia 100g,Tea & Coffee,Absolut,2065,137g,168,Mfg_6,Supplier_H,2025-08-26,2024-03-27,2478
+88,8900000000088,Butter - Nestlé 500g,Ice Cream,Dabur,634,650ml,186,Mfg_7,Supplier_A,2025-08-27,2024-03-28,760
+89,8900000000089,Rum - Dettol 50ml,Juices & Drinks,Dettol,1900,200ml,61,Mfg_8,Supplier_J,2025-08-28,2024-03-29,2280
+90,8900000000090,Candy - Coca-Cola 2L,Breakfast Drinks,Lakme,1286,50ml,5,Mfg_9,Supplier_H,2025-08-29,2024-03-30,1543
+91,8900000000091,Spices - Unilever 70g,Ghee & Oils,Pepsi,1725,200g,67,Mfg_10,Supplier_G,2025-08-30,2024-03-31,2070
+92,8900000000092,Juice - Lakme 650ml,Beauty & Cosmetics,Cadbury,312,250ml,186,Mfg_11,Supplier_A,2025-08-31,2024-04-01,374
+93,8900000000093,Milk - Colgate 400g,Instant Noodles,Bombay,648,250g,59,Mfg_12,Supplier_B,2025-09-01,2024-04-02,777
+94,8900000000094,Bread - Lay's 70g,Snacks,Hennessy,65,250g,119,Mfg_13,Supplier_C,2025-09-02,2024-04-03,78
+95,8900000000095,Candy - Bagpiper 250g,Juices & Drinks,Cadbury,735,100g,172,Mfg_14,Supplier_A,2025-09-03,2024-04-04,882
+96,8900000000096,Water - Hennessy 25 Bags,Beauty & Cosmetics,Patanjali,535,5kg,147,Mfg_15,Supplier_I,2025-09-04,2024-04-05,642
+97,8900000000097,Jam - Britannia 150g,Chocolates & Candy,Himalaya,483,150g,153,Mfg_16,Supplier_H,2025-09-05,2024-04-06,579
+98,8900000000098,Candy - Godrej 50ml,Beauty & Cosmetics,Bisleri,37,5kg,179,Mfg_17,Supplier_B,2025-09-06,2024-04-07,44
+99,8900000000099,Cereal - Lakme 400g,Health & Honey,Nestlé,2135,200ml,57,Mfg_18,Supplier_I,2025-09-07,2024-04-08,2562
+100,8900000000100,Gin - Maggi 137g,Laundry & Cleaning,Bagpiper,374,50ml,141,Mfg_19,Supplier_G,2025-09-08,2024-04-09,448
+101,8900000000101,Detergent - Colgate 2kg,Personal Care,Britannia,535,500g,184,Mfg_20,Supplier_I,2025-09-09,2024-04-10,642
+102,8900000000102,Dal - Dabur 100g,Juices & Drinks,Lipton,1345,750ml,61,Mfg_21,Supplier_F,2025-09-10,2024-04-11,1614
+103,8900000000103,Butter - Fanta 600g,Juices & Drinks,Rémy Martin,892,250g,121,Mfg_22,Supplier_F,2025-09-11,2024-04-12,1070
+104,8900000000104,Shampoo - Rémy Martin 1kg,Bread & Bakery,Nestlé,1040,137g,158,Mfg_23,Supplier_D,2025-09-12,2024-04-13,1248
+105,8900000000105,Bread - Colgate 200g,Soft Drinks,Lakme,1036,500g,173,Mfg_24,Supplier_J,2025-09-13,2024-04-14,1243
+106,8900000000106,Soap - Rémy Martin 100g,Health & Honey,ITC,1656,500g,39,Mfg_25,Supplier_J,2025-09-14,2024-04-15,1987
+107,8900000000107,Beer - Lakme 500g,Skin Care,Bisleri,928,40g,67,Mfg_26,Supplier_B,2025-09-15,2024-04-16,1113
+108,8900000000108,Spreads - Tata 250g,Chocolates & Candy,Dove,2420,750ml,29,Mfg_27,Supplier_G,2025-09-16,2024-04-17,2904
+109,8900000000109,Honey - Bombay 750ml,Meat Alternatives,Haldiram,1784,4 pack,94,Mfg_28,Supplier_E,2025-09-17,2024-04-18,2140
+110,8900000000110,Crisps - Patanjali 50ml,Alcoholic Beverages,Sprite,1541,400g,79,Mfg_29,Supplier_F,2025-09-18,2024-04-19,1849
+111,8900000000111,Oats - Budweiser 5L,Juices & Drinks,Diageo,1916,10oz,42,Mfg_30,Supplier_B,2025-09-19,2024-04-20,2299
+112,8900000000112,Wine - Patanjali 100g,Tea & Coffee,Bagpiper,1225,500ml,134,Mfg_31,Supplier_E,2025-09-20,2024-04-21,1470
+113,8900000000113,Soap - Dove 600g,Snacks,Fanta,1664,100ml,139,Mfg_32,Supplier_J,2025-09-21,2024-04-22,1996
+114,8900000000114,Gin - Unilever 25 Bags,Personal Care,Absolut,494,10oz,166,Mfg_33,Supplier_D,2025-09-22,2024-04-23,592
+115,8900000000115,Water - Garnier 150g,Alcoholic Beverages,Cadbury,2085,25 Bags,95,Mfg_34,Supplier_I,2025-09-23,2024-04-24,2502
+116,8900000000116,Dal - Lay's 750ml,Snacks,Lakme,723,5kg,21,Mfg_35,Supplier_F,2025-09-24,2024-04-25,867
+117,8900000000117,Juice - Dove 1L,Personal Care,Revlon,1072,5kg,132,Mfg_36,Supplier_B,2025-09-25,2024-04-26,1286
+118,8900000000118,Shampoo - Kingfisher 200g,Breakfast Drinks,Patanjali,1986,2kg,175,Mfg_37,Supplier_A,2025-09-26,2024-04-27,2383
+119,8900000000119,Energy Drink - Britannia 4 pack,Jams & Spreads,ITC,1306,5kg,191,Mfg_38,Supplier_E,2025-09-27,2024-04-28,1567
+120,8900000000120,Honey - Lay's 100g,Bread & Bakery,Sprite,1264,750ml,112,Mfg_39,Supplier_I,2025-09-28,2024-04-29,1516
+121,8900000000121,Tea - Ferrero 100ml,Alcoholic Beverages,Himalaya,2143,40g,183,Mfg_0,Supplier_F,2025-09-29,2024-04-30,2571
+122,8900000000122,Cola - Patanjali 25 Bags,Frozen Foods,Bombay,135,1kg,186,Mfg_1,Supplier_J,2025-09-30,2024-05-01,162
+123,8900000000123,Water - Budweiser 500ml,Cooking Bases,Dabur,546,100g,156,Mfg_2,Supplier_G,2025-10-01,2024-05-02,655
+124,8900000000124,Chips - Saffola 500ml,Soft Drinks,Nestlé,2202,600g,29,Mfg_3,Supplier_E,2025-10-02,2024-05-03,2642
+125,8900000000125,Detergent - ITC 5kg,Hair Care,Garnier,2082,1L,184,Mfg_4,Supplier_J,2025-10-03,2024-05-04,2498
+126,8900000000126,Spices - Maggi 250ml,Instant Noodles,Nestlé,1613,100g,92,Mfg_5,Supplier_F,2025-10-04,2024-05-05,1935
+127,8900000000127,Toothpaste - Everest 200g,Laundry & Cleaning,Horlicks,76,10oz,165,Mfg_6,Supplier_E,2025-10-05,2024-05-06,91
+128,8900000000128,Rice - Dove 600g,Snacks,Unilever,242,5L,181,Mfg_7,Supplier_I,2025-10-06,2024-05-07,290
+129,8900000000129,Shampoo - Bagpiper 4 pack,Health & Honey,Kingfisher,2166,100g,33,Mfg_8,Supplier_F,2025-10-07,2024-05-08,2599
+130,8900000000130,Shampoo - Fanta 5L,Bread & Bakery,Parle,1179,1L,67,Mfg_9,Supplier_H,2025-10-08,2024-05-09,1414
+131,8900000000131,Ice Cream - Himalaya 1L,Meat Alternatives,Parle,2168,600g,154,Mfg_10,Supplier_B,2025-10-09,2024-05-10,2601
+132,8900000000132,Oats - Lakme 5kg,Hair Care,Lipton,2285,200g,158,Mfg_11,Supplier_I,2025-10-10,2024-05-11,2742
+133,8900000000133,Cookies - Ferrero 400g,Tea & Coffee,Lipton,120,750ml,160,Mfg_12,Supplier_E,2025-10-11,2024-05-12,144
+134,8900000000134,Crisps - Dove 70g,Hair Care,Coca-Cola,1503,137g,118,Mfg_13,Supplier_G,2025-10-12,2024-05-13,1803
+135,8900000000135,Vodka - Patanjali 600g,Beauty & Cosmetics,Dabur,2091,5kg,53,Mfg_14,Supplier_J,2025-10-13,2024-05-14,2509
+136,8900000000136,Biscuits - Godrej 500ml,Soft Drinks,Sprite,632,5kg,85,Mfg_15,Supplier_A,2025-10-14,2024-05-15,758
+137,8900000000137,Ice Cream - Rémy Martin 40g,Health & Honey,Maggi,2482,40g,88,Mfg_16,Supplier_J,2025-10-15,2024-05-16,2978
+138,8900000000138,Honey - Coca-Cola 4 pack,Breakfast Drinks,Dettol,1551,2kg,109,Mfg_17,Supplier_E,2025-10-16,2024-05-17,1861
+139,8900000000139,Cola - Parle 4 pack,Chocolates & Candy,ITC,1315,40g,181,Mfg_18,Supplier_J,2025-10-17,2024-05-18,1578
+140,8900000000140,Toothpaste - Dettol 250ml,Hair Care,Cadbury,1771,1kg,152,Mfg_19,Supplier_B,2025-10-18,2024-05-19,2125
+141,8900000000141,Wheat Atta - ITC 1L,Disinfectants,Tata,1985,1kg,122,Mfg_20,Supplier_F,2025-10-19,2024-05-20,2382
+142,8900000000142,Chocolate - Dove 150g,Frozen Foods,ITC,2372,250g,90,Mfg_21,Supplier_A,2025-10-20,2024-05-21,2846
+143,8900000000143,Water - Lay's 500ml,Breakfast Drinks,Lay's,886,2kg,67,Mfg_22,Supplier_C,2025-10-21,2024-05-22,1063
+144,8900000000144,Wheat Atta - Godrej 2kg,Jams & Spreads,Dove,1999,40g,193,Mfg_23,Supplier_E,2025-10-22,2024-05-23,2398
+145,8900000000145,Cookies - Fanta 600g,Frozen Foods,Revlon,1322,5kg,108,Mfg_24,Supplier_D,2025-10-23,2024-05-24,1586
+146,8900000000146,Dal - Mondelēz 4 pack,Instant Noodles,Bombay,1470,100ml,53,Mfg_25,Supplier_C,2025-10-24,2024-05-25,1764
+147,8900000000147,Spices - Parle 150g,Laundry & Cleaning,Garnier,2334,70g,75,Mfg_26,Supplier_J,2025-10-25,2024-05-26,2800
+148,8900000000148,Whisky - Maggi 500g,Beauty & Cosmetics,Colgate,1743,1L,5,Mfg_27,Supplier_E,2025-10-26,2024-05-27,2091
+149,8900000000149,Vodka - Nestlé 250ml,Soap & Bath,Ferrero,1615,1L,145,Mfg_28,Supplier_H,2025-10-27,2024-05-28,1938
+150,8900000000150,Spices - Diageo 4 pack,Soap & Bath,Diageo,1536,100g,183,Mfg_29,Supplier_D,2025-10-28,2024-05-29,1843
