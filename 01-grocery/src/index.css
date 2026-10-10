@@ -1,1 +1,233 @@
 @import "tailwindcss";
+
+/* ========================================
+   SMARTCART DESIGN SYSTEM
+   ======================================== */
+
+:root {
+  color-scheme: light;
+
+  /* Brand colors */
+  --sc-forest: #153d30;
+  --sc-forest-hover: #205541;
+  --sc-emerald: #15803d;
+  --sc-emerald-light: #dcfce7;
+  --sc-lime: #d9f99d;
+
+  /* Backgrounds */
+  --sc-background: #f5f8f6;
+  --sc-surface: #ffffff;
+  --sc-surface-muted: #f8faf9;
+
+  /* Text */
+  --sc-text: #17231f;
+  --sc-text-secondary: #64716b;
+  --sc-text-muted: #94a39a;
+
+  /* Borders and effects */
+  --sc-border: #e2e9e4;
+  --sc-border-strong: #d1ddd5;
+  --sc-shadow-sm: 0 2px 8px rgb(21 61 48 / 4%);
+  --sc-shadow-md: 0 8px 24px rgb(21 61 48 / 7%);
+
+  /* Shape */
+  --sc-radius-sm: 10px;
+  --sc-radius-md: 16px;
+  --sc-radius-lg: 24px;
+
+  /* Typography */
+  --sc-font: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+    "Segoe UI", sans-serif;
+
+  font-family: var(--sc-font);
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+
+  background: var(--sc-background);
+  color: var(--sc-text);
+}
+
+/* ========================================
+   BASE ELEMENTS
+   ======================================== */
+
+html {
+  min-width: 320px;
+  min-height: 100%;
+  scroll-behavior: smooth;
+  scroll-padding-top: 90px;
+}
+
+body {
+  min-width: 320px;
+  min-height: 100vh;
+  margin: 0;
+  background: var(--sc-background);
+  color: var(--sc-text);
+  font-family: var(--sc-font);
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+body,
+button,
+input,
+textarea,
+select {
+  font-family: var(--sc-font);
+}
+
+button,
+input,
+textarea,
+select {
+  font-size: inherit;
+}
+
+button {
+  -webkit-tap-highlight-color: transparent;
+}
+
+button:disabled {
+  cursor: not-allowed;
+}
+
+button,
+a,
+input,
+textarea,
+select {
+  -webkit-tap-highlight-color: transparent;
+}
+
+img,
+video,
+canvas,
+svg {
+  max-width: 100%;
+}
+
+img,
+video {
+  height: auto;
+}
+
+/* Consistent keyboard accessibility */
+:focus-visible {
+  outline: 2px solid var(--sc-emerald);
+  outline-offset: 3px;
+}
+
+/* Form controls */
+input,
+textarea,
+select {
+  accent-color: var(--sc-emerald);
+}
+
+::selection {
+  background: var(--sc-lime);
+  color: var(--sc-forest);
+}
+
+/* Cleaner scrollbar */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #cbd8ce transparent;
+}
+
+*::-webkit-scrollbar {
+  width: 7px;
+  height: 7px;
+}
+
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+*::-webkit-scrollbar-thumb {
+  border-radius: 999px;
+  background: #cbd8ce;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background: #9caf9f;
+}
+
+/* ========================================
+   REUSABLE DESIGN UTILITIES
+   ======================================== */
+
+.sc-surface {
+  border: 1px solid var(--sc-border);
+  border-radius: var(--sc-radius-md);
+  background: var(--sc-surface);
+  box-shadow: var(--sc-shadow-sm);
+}
+
+.sc-muted {
+  color: var(--sc-text-secondary);
+}
+
+.sc-primary-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 11px 18px;
+  border: 0;
+  border-radius: 12px;
+  background: var(--sc-forest);
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    background-color 180ms ease,
+    box-shadow 180ms ease,
+    transform 180ms ease;
+}
+
+.sc-primary-button:hover:not(:disabled) {
+  background: var(--sc-forest-hover);
+  box-shadow: var(--sc-shadow-md);
+}
+
+.sc-primary-button:active:not(:disabled) {
+  transform: scale(0.98);
+}
+
+/* ========================================
+   ACCESSIBILITY & MOTION
+   ======================================== */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(-100%);
+    opacity: 0.7;
+  }
+
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-\[slideIn_\.25s_ease-out\] {
+    animation: none;
+  }
+}

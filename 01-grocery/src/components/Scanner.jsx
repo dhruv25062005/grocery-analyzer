@@ -1,5 +1,4 @@
-import { useEffect, useRef, useState } from "react";
-
+import { useCallback, useEffect, useRef, useState } from "react";
 import {
   Html5Qrcode,
   Html5QrcodeSupportedFormats,
@@ -9,212 +8,245 @@ import { getProductByBarcode } from "../services/productService";
 
 const SCANNER_ID = "smartcart-barcode-reader";
 
+const BARCODE_FORMATS = [
+  Html5QrcodeSupportedFormats.EAN_13,
+  Html5QrcodeSupportedFormats.EAN_8,
+  Html5QrcodeSupportedFormats.UPC_A,
+  Html5QrcodeSupportedFormats.UPC_E,
+  Html5QrcodeSupportedFormats.CODE_128,
+  Html5QrcodeSupportedFormats.CODE_39,
+  Html5QrcodeSupportedFormats.ITF,
+];
+
+const Icon = ({ name, className = "h-5 w-5" }) => {
+  const common = {
+    className,
+    viewBox: "0 0 24 24",
+    fill: "none",
+    stroke: "currentColor",
+    strokeWidth: 1.8,
+    strokeLinecap: "round",
+    strokeLinejoin: "round",
+    "aria-hidden": true,
+  };
+
+  const paths = {
+    camera: (
+      <>
+        <path d="M14 4H8L6 7H3v13h18V7h-3l-2-3Z" />
+        <circle cx="12" cy="13" r="4" />
+      </>
+    ),
+    barcode: (
+      <>
+        <path d="M3 5v14M6 5v14M9 5v14M13 5v14M15 5v14M19 5v14M21 5v14" />
+      </>
+    ),
+    search: (
+      <>
+        <circle cx="10.5" cy="10.5" r="6.5" />
+        <path d="m16 16 5 5" />
+      </>
+    ),
+    stop: <rect x="6" y="6" width="12" height="12" rx="2" />,
+    check: <path d="m5 12 4 4L19 6" />,
+    refresh: (
+      <>
+        <path d="M20 7v5h-5" />
+        <path d="M4 17v-5h5" />
+        <path d="M5.5 9a7 7 0 0 1 11.6-2L20 12M4 12l2.9 5a7 7 0 0 0 11.6-2" />
+      </>
+    ),
+    alert: (
+      <>
+        <path d="m12 3 10 18H2L12 3Z" />
+        <path d="M12 9v4m0 4h.01" />
+      </>
+    ),
+    keyboard: (
+      <>
+        <rect x="2" y="5" width="20" height="14" rx="2" />
+        <path d="M6 9h.01M10 9h.01M14 9h.01M18 9h.01M6 12h.01M10 12h.01M14 12h.01M18 12h.01M8 15h8" />
+      </>
+    ),
+  };
+
+  return <svg {...common}>{paths[name] || paths.check}</svg>;
+};
+
+const getLookupError = (err) => {
+  const message = String(err?.message || "");
+
+  if (
+    err?.name === "TypeError" ||
+    /failed to fetch|networkerror|load failed|internet disconnected/i.test(
+      message
+    )
+  ) {
+    return "Unable to connect to the product server. Check your internet connection and backend API, then try again.";
+  }
+
+  if (/not found|no product|404/i.test(message)) {
+    return "No product matches this barcode. Check the barcode or add the product to your inventory first.";
+  }
+
+  return message || "Unable to find this product. Please try again.";
+};
+
 const Scanner = ({ onProductFound }) => {
   const inputRef = useRef(null);
   const scannerRef = useRef(null);
   const processingRef = useRef(false);
+  const mountedRef = useRef(false);
+  const cameraOperationRef = useRef(false);
+  const lookupSequenceRef = useRef(0);
 
   const [barcode, setBarcode] = useState("");
   const [loading, setLoading] = useState(false);
-
-  const [cameraActive, setCameraActive] =
-    useState(false);
-
-  const [cameraStarting, setCameraStarting] =
-    useState(false);
-
+  const [cameraActive, setCameraActive] = useState(false);
+  const [cameraStarting, setCameraStarting] = useState(false);
   const [error, setError] = useState("");
-  const [detectedBarcode, setDetectedBarcode] =
-    useState("");
+  const [notice, setNotice] = useState("");
+  const [detectedBarcode, setDetectedBarcode] = useState("");
+  const [lastFoundProduct, setLastFoundProduct] = useState(null);
 
-  /*
-  ============================================================
-  FOCUS MANUAL INPUT
-  ============================================================
-  */
-
+  // Focus manual input when the camera is not in use.
   useEffect(() => {
-    if (!cameraActive && !cameraStarting) {
+    if (!cameraActive && !cameraStarting && !loading) {
       inputRef.current?.focus();
     }
-  }, [cameraActive, cameraStarting]);
+  }, [cameraActive, cameraStarting, loading]);
 
-  /*
-  ============================================================
-  CLEANUP CAMERA
-  ============================================================
-  */
-
+  // Safely stop and release the camera when the component unmounts.
   useEffect(() => {
+    mountedRef.current = true;
+
     return () => {
+      mountedRef.current = false;
+      lookupSequenceRef.current += 1;
+
       const scanner = scannerRef.current;
+      scannerRef.current = null;
 
-      if (!scanner) {
-        return;
-      }
-
-      const cleanup = async () => {
-        try {
-          if (scanner.isScanning) {
-            await scanner.stop();
+      if (scanner) {
+        const cleanup = async () => {
+          try {
+            if (scanner.isScanning) {
+              await scanner.stop();
+            }
+          } catch (err) {
+            console.debug("Scanner cleanup:", err);
           }
-        } catch (err) {
-          console.error(
-            "Scanner cleanup error:",
-            err
-          );
-        }
 
-        try {
-          await scanner.clear();
-        } catch (err) {
-          console.error(
-            "Scanner clear error:",
-            err
-          );
-        }
-      };
+          try {
+            await scanner.clear();
+          } catch (err) {
+            console.debug("Scanner release:", err);
+          }
+        };
 
-      cleanup();
+        void cleanup();
+      }
     };
   }, []);
 
-  /*
-  ============================================================
-  PRODUCT LOOKUP
-  ============================================================
-  */
+  // Product lookup shared by the camera and manual scanner.
+  const processBarcode = useCallback(
+    async (value) => {
+      const scannedBarcode = String(value || "").trim();
 
-  const processBarcode = async (value) => {
-    const scannedBarcode =
-      String(value || "").trim();
+      if (!scannedBarcode || processingRef.current) {
+        return;
+      }
 
-    if (
-      !scannedBarcode ||
-      processingRef.current
-    ) {
-      return;
-    }
-
-    try {
       processingRef.current = true;
+      const requestId = ++lookupSequenceRef.current;
 
       setLoading(true);
       setError("");
-      setDetectedBarcode(
-        scannedBarcode
-      );
+      setNotice("");
+      setDetectedBarcode(scannedBarcode);
+      setLastFoundProduct(null);
 
-      console.log(
-        "📷 Barcode detected:",
-        scannedBarcode
-      );
+      try {
+        const data = await getProductByBarcode(scannedBarcode);
 
-      const data =
-        await getProductByBarcode(
-          scannedBarcode
-        );
+        if (!mountedRef.current || requestId !== lookupSequenceRef.current) {
+          return;
+        }
 
-      console.log(
-        "📦 Product API response:",
-        data
-      );
+        if (!data?.success || !data?.product) {
+          throw new Error(
+            `Product not found for barcode: ${scannedBarcode}`
+          );
+        }
 
-      if (
-        !data.success ||
-        !data.product
-      ) {
-        throw new Error(
-          `Product not found for barcode: ${scannedBarcode}`
-        );
+        const product = data.product;
+
+        setLastFoundProduct(product);
+        setNotice(`${product.name || "Product"} found successfully.`);
+
+        if (typeof onProductFound === "function") {
+          onProductFound(product);
+        }
+
+        setBarcode("");
+      } catch (err) {
+        console.error("Product lookup error:", err);
+
+        if (mountedRef.current && requestId === lookupSequenceRef.current) {
+          setError(getLookupError(err));
+          setBarcode("");
+        }
+      } finally {
+        if (mountedRef.current && requestId === lookupSequenceRef.current) {
+          setLoading(false);
+        }
+
+        processingRef.current = false;
       }
+    },
+    [onProductFound]
+  );
 
-      console.log(
-        "✅ Product found:",
-        data.product
-      );
-
-      onProductFound(
-        data.product
-      );
-
-      setBarcode("");
-    } catch (err) {
-      console.error(
-        "❌ Product lookup error:",
-        err
-      );
-
-      setError(
-        err?.message ||
-          "Unable to find this product."
-      );
-
-      setBarcode("");
-    } finally {
-      setLoading(false);
-
-      setTimeout(() => {
-        processingRef.current =
-          false;
-      }, 800);
-    }
-  };
-
-  /*
-  ============================================================
-  STOP CAMERA
-  ============================================================
-  */
-
-  const stopCamera = async () => {
-    const scanner =
-      scannerRef.current;
+  // Stop the active camera and release the scanner.
+  const stopCamera = useCallback(async () => {
+    const scanner = scannerRef.current;
 
     if (!scanner) {
-      setCameraActive(false);
-      setCameraStarting(false);
+      if (mountedRef.current) {
+        setCameraActive(false);
+        setCameraStarting(false);
+      }
       return;
     }
+
+    scannerRef.current = null;
 
     try {
       if (scanner.isScanning) {
         await scanner.stop();
       }
     } catch (err) {
-      console.error(
-        "Camera stop error:",
-        err
-      );
+      console.debug("Camera stop:", err);
     }
 
     try {
       await scanner.clear();
     } catch (err) {
-      console.error(
-        "Scanner clear error:",
-        err
-      );
+      console.debug("Scanner clear:", err);
     }
 
-    scannerRef.current = null;
+    if (mountedRef.current) {
+      setCameraActive(false);
+      setCameraStarting(false);
+    }
+  }, []);
 
-    setCameraActive(false);
-    setCameraStarting(false);
-
-    console.log(
-      "📷 Camera scanner stopped"
-    );
-  };
-
-  /*
-  ============================================================
-  START CAMERA
-  ============================================================
-  */
-
-  const startCamera = async () => {
+  // Start the webcam barcode scanner.
+  const startCamera = useCallback(async () => {
     if (
+      cameraOperationRef.current ||
       cameraActive ||
       cameraStarting ||
       loading ||
@@ -223,508 +255,299 @@ const Scanner = ({ onProductFound }) => {
       return;
     }
 
+    cameraOperationRef.current = true;
+    setError("");
+    setNotice("");
+    setDetectedBarcode("");
+    setCameraStarting(true);
+
     let scanner = null;
 
     try {
-      setError("");
-      setDetectedBarcode("");
+      if (!window.isSecureContext) {
+        throw new Error(
+          "Camera access requires HTTPS or localhost. Open SmartCart on localhost for local testing."
+        );
+      }
 
-      /*
-      ----------------------------------------------------------
-      STEP 1
-      Show the scanner container FIRST.
-
-      This is the important fix.
-      ----------------------------------------------------------
-      */
-
-      setCameraStarting(true);
-
-      /*
-      ----------------------------------------------------------
-      STEP 2
-      Give React time to render the visible container.
-      ----------------------------------------------------------
-      */
-
+      // Wait for React to render the scanner container.
       await new Promise((resolve) => {
         requestAnimationFrame(() => {
           requestAnimationFrame(resolve);
         });
       });
 
-      /*
-      ----------------------------------------------------------
-      STEP 3
-      Find the scanner element.
-      ----------------------------------------------------------
-      */
+      if (!mountedRef.current) return;
 
-      const scannerElement =
-        document.getElementById(
-          SCANNER_ID
-        );
+      const element = document.getElementById(SCANNER_ID);
 
-      if (!scannerElement) {
-        throw new Error(
-          "Scanner element was not found."
-        );
+      if (!element) {
+        throw new Error("The scanner area could not be initialized.");
       }
 
-      console.log(
-        "✅ Scanner element found"
-      );
+      const cameras = await Html5Qrcode.getCameras();
 
-      /*
-      ----------------------------------------------------------
-      STEP 4
-      Get available cameras.
-      ----------------------------------------------------------
-      */
-
-      console.log(
-        "📷 Detecting cameras..."
-      );
-
-      const cameras =
-        await Html5Qrcode.getCameras();
-
-      console.log(
-        "📷 Available cameras:",
-        cameras
-      );
-
-      if (
-        !cameras ||
-        cameras.length === 0
-      ) {
-        throw new Error(
-          "No camera was detected on this computer."
-        );
+      if (!cameras?.length) {
+        throw new Error("No camera was detected on this device.");
       }
 
-      /*
-      ----------------------------------------------------------
-      STEP 5
-      Select the best available camera.
-      ----------------------------------------------------------
-      */
-
-      let cameraId =
-        cameras[0].id;
-
-      const preferredCamera =
-        cameras.find(
-          (camera) => {
-            const label =
-              String(
-                camera.label || ""
-              ).toLowerCase();
-
-            return (
-              label.includes("back") ||
-              label.includes("rear") ||
-              label.includes(
-                "environment"
-              )
-            );
-          }
-        );
-
-      if (preferredCamera) {
-        cameraId =
-          preferredCamera.id;
-      }
-
-      console.log(
-        "📷 Selected camera:",
-        cameraId
+      // Prefer the rear camera on phones.
+      const preferredCamera = cameras.find((camera) =>
+        /back|rear|environment|world/i.test(camera.label || "")
       );
 
-      /*
-      ----------------------------------------------------------
-      STEP 6
-      Create scanner.
-      ----------------------------------------------------------
-      */
+      const cameraId = (preferredCamera || cameras[0]).id;
 
-      scanner =
-        new Html5Qrcode(
-          SCANNER_ID
-        );
+      scanner = new Html5Qrcode(SCANNER_ID, {
+        formatsToSupport: BARCODE_FORMATS,
+        verbose: false,
+      });
 
-      scannerRef.current =
-        scanner;
-
-      /*
-      ----------------------------------------------------------
-      STEP 7
-      Start scanner.
-
-      The container is ALREADY visible here.
-      ----------------------------------------------------------
-      */
+      scannerRef.current = scanner;
 
       await scanner.start(
         cameraId,
         {
-          fps: 15,
-
-          qrbox: {
-            width: 300,
-            height: 120,
-          },
-
-          formatsToSupport: [
-            Html5QrcodeSupportedFormats.EAN_13,
-            Html5QrcodeSupportedFormats.EAN_8,
-            Html5QrcodeSupportedFormats.UPC_A,
-            Html5QrcodeSupportedFormats.UPC_E,
-            Html5QrcodeSupportedFormats.CODE_128,
-            Html5QrcodeSupportedFormats.CODE_39,
-            Html5QrcodeSupportedFormats.ITF,
-          ],
+          fps: 12,
+          qrbox: (viewWidth, viewHeight) => ({
+            width: Math.min(320, Math.floor(viewWidth * 0.9)),
+            height: Math.min(130, Math.floor(viewHeight * 0.65)),
+          }),
+          aspectRatio: 1.7778,
+          disableFlip: false,
         },
-
-        /*
-        --------------------------------------------------------
-        BARCODE DETECTED
-        --------------------------------------------------------
-        */
-
         async (decodedText) => {
           if (
-            processingRef.current
+            processingRef.current ||
+            !mountedRef.current ||
+            scannerRef.current !== scanner
           ) {
             return;
           }
 
-          const scannedBarcode =
-            String(
-              decodedText || ""
-            ).trim();
+          const value = String(decodedText || "").trim();
 
-          if (!scannedBarcode) {
-            return;
-          }
+          if (!value) return;
 
-          console.log(
-            "🔎 Barcode detected:",
-            scannedBarcode
-          );
-
-          processingRef.current =
-            true;
-
-          setDetectedBarcode(
-            scannedBarcode
-          );
-
-          /*
-          Stop camera BEFORE
-          updating the React UI.
-          */
+          // Lock immediately so multiple frames cannot add the same scan.
+          processingRef.current = true;
+          setDetectedBarcode(value);
+          setNotice("Barcode detected. Looking up product...");
 
           await stopCamera();
 
-          processingRef.current =
-            false;
+          // processBarcode acquires its own lock.
+          processingRef.current = false;
 
-          /*
-          Lookup product.
-          */
-
-          await processBarcode(
-            scannedBarcode
-          );
+          await processBarcode(value);
         },
-
-        /*
-        --------------------------------------------------------
-        NORMAL SCAN FAILURE
-        --------------------------------------------------------
-
-        html5-qrcode calls this continuously
-        when no barcode is detected.
-
-        We intentionally ignore it.
-        */
-
-        () => {}
+        () => {
+          // No barcode in this frame is normal; keep scanning.
+        }
       );
 
-      /*
-      ----------------------------------------------------------
-      CAMERA SUCCESSFULLY STARTED
-      ----------------------------------------------------------
-      */
-
-      setCameraStarting(false);
-      setCameraActive(true);
-
-      console.log(
-        "✅ SmartCart camera started successfully"
-      );
+      if (mountedRef.current) {
+        setCameraActive(true);
+        setCameraStarting(false);
+        setNotice("Camera ready. Place a barcode inside the scanning area.");
+      }
     } catch (err) {
-      console.error(
-        "❌ CAMERA ERROR:",
-        err
-      );
-
-      console.error(
-        "Camera error name:",
-        err?.name
-      );
-
-      console.error(
-        "Camera error message:",
-        err?.message
-      );
-
-      /*
-      ----------------------------------------------------------
-      CLEANUP FAILED SCANNER
-      ----------------------------------------------------------
-      */
+      console.error("Camera start error:", err);
 
       if (scanner) {
+        if (scannerRef.current === scanner) {
+          scannerRef.current = null;
+        }
+
         try {
-          if (
-            scanner.isScanning
-          ) {
+          if (scanner.isScanning) {
             await scanner.stop();
           }
-        } catch (stopError) {
-          console.error(
-            "Scanner stop error:",
-            stopError
-          );
+        } catch {
+          // Ignore cleanup errors after a failed start.
         }
 
         try {
           await scanner.clear();
-        } catch (clearError) {
-          console.error(
-            "Scanner clear error:",
-            clearError
-          );
+        } catch {
+          // Ignore cleanup errors after a failed start.
         }
       }
 
-      scannerRef.current =
-        null;
+      if (mountedRef.current) {
+        let message = err?.message || "Unable to start the camera.";
 
-      setCameraActive(false);
-      setCameraStarting(false);
+        if (err?.name === "NotAllowedError") {
+          message =
+            "Camera permission was denied. Allow camera access in your browser settings.";
+        } else if (err?.name === "NotFoundError") {
+          message = "No compatible camera was found on this device.";
+        } else if (err?.name === "NotReadableError") {
+          message =
+            "The camera is busy. Close other applications using it and try again.";
+        } else if (err?.name === "OverconstrainedError") {
+          message =
+            "The selected camera does not support these settings. Try another camera.";
+        }
 
-      /*
-      ----------------------------------------------------------
-      DISPLAY USEFUL ERROR
-      ----------------------------------------------------------
-      */
-
-      const name =
-        err?.name || "";
-
-      const message =
-        String(
-          err?.message || ""
-        );
-
-      if (
-        name ===
-        "NotAllowedError"
-      ) {
-        setError(
-          "Camera permission was denied. Allow camera access for localhost in Chrome."
-        );
-      } else if (
-        name ===
-        "NotFoundError"
-      ) {
-        setError(
-          "No camera was found on this computer."
-        );
-      } else if (
-        name ===
-        "NotReadableError"
-      ) {
-        setError(
-          "The camera is already being used by another application."
-        );
-      } else if (
-        name ===
-        "OverconstrainedError"
-      ) {
-        setError(
-          "The selected camera does not support the requested settings."
-        );
-      } else {
-        setError(
-          `Camera error: ${
-            message ||
-            "Unable to access the camera."
-          }`
-        );
+        setError(message);
+        setCameraActive(false);
+        setCameraStarting(false);
       }
+    } finally {
+      cameraOperationRef.current = false;
     }
-  };
+  }, [
+    cameraActive,
+    cameraStarting,
+    loading,
+    processBarcode,
+    stopCamera,
+  ]);
 
-  /*
-  ============================================================
-  MANUAL / USB BARCODE SCANNER
-  ============================================================
-  */
+  // Manual entry and USB/Bluetooth scanners.
+  const handleSubmit = async (event) => {
+    event.preventDefault();
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+    if (loading || cameraActive || cameraStarting) return;
 
-    if (
-      !barcode.trim() ||
-      loading ||
-      cameraActive ||
-      cameraStarting
-    ) {
-      return;
-    }
+    await processBarcode(barcode);
 
-    await processBarcode(
-      barcode
-    );
-
-    setTimeout(() => {
+    if (mountedRef.current) {
       inputRef.current?.focus();
-    }, 50);
+    }
   };
 
-  /*
-  ============================================================
-  UI
-  ============================================================
-  */
+  const resetScanner = () => {
+    setError("");
+    setNotice("");
+    setDetectedBarcode("");
+    setLastFoundProduct(null);
+    setBarcode("");
+
+    if (!cameraActive && !cameraStarting && !loading) {
+      inputRef.current?.focus();
+    }
+  };
 
   return (
-    <div className="w-full">
+    <section className="w-full space-y-5">
+      {/* Scanner header */}
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+        <div className="flex items-center gap-3">
+          <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-[#EAF3ED] text-[#153D30]">
+            <Icon name="barcode" className="h-6 w-6" />
+          </div>
 
-      {/* =====================================================
-          CAMERA CONTAINER
-      ====================================================== */}
+          <div>
+            <h2 className="text-lg font-bold text-[#17231F]">
+              Scan your products
+            </h2>
+            <p className="mt-1 text-sm text-[#718078]">
+              Use your camera or a barcode scanner.
+            </p>
+          </div>
+        </div>
 
-      {(cameraActive ||
-        cameraStarting) && (
-        <div className="mb-6 overflow-hidden rounded-2xl border border-green-200 bg-slate-950">
+        <span className="inline-flex w-fit items-center gap-2 rounded-full border border-[#DCE8DF] bg-white px-3 py-1.5 text-xs font-semibold text-[#205541]">
+          <span
+            className={`h-2 w-2 rounded-full ${
+              cameraActive
+                ? "animate-pulse bg-emerald-500"
+                : loading
+                ? "animate-pulse bg-amber-500"
+                : "bg-[#89968E]"
+            }`}
+          />
+          {cameraActive
+            ? "Camera active"
+            : loading
+            ? "Searching inventory"
+            : "Ready to scan"}
+        </span>
+      </div>
 
-          {/* Header */}
-
-          <div className="flex items-center justify-between px-4 py-3 text-white">
-
+      {/* Camera panel */}
+      {(cameraActive || cameraStarting) && (
+        <div className="overflow-hidden rounded-2xl border border-[#DCE5DE] bg-[#10251D]">
+          <div className="flex items-center justify-between gap-3 px-4 py-4 text-white sm:px-5">
             <div>
-              <p className="font-semibold">
-                Camera Scanner
-              </p>
-
-              <p className="text-xs text-slate-300">
+              <p className="font-semibold">Live barcode scanner</p>
+              <p className="mt-1 text-xs text-white/60">
                 {cameraStarting
-                  ? "Starting camera..."
-                  : "Point the barcode toward the camera"}
+                  ? "Requesting camera access..."
+                  : "Align the barcode inside the scan area."}
               </p>
             </div>
 
-            <span className="flex items-center gap-2 text-xs text-green-400">
-
-              <span className="h-2 w-2 animate-pulse rounded-full bg-green-400" />
-
-              {cameraStarting
-                ? "Starting"
-                : "Scanning"}
-
+            <span className="inline-flex items-center gap-2 rounded-full bg-white/10 px-3 py-1.5 text-xs font-medium text-white">
+              <span className="h-2 w-2 animate-pulse rounded-full bg-[#D9F99D]" />
+              {cameraStarting ? "Starting" : "Live"}
             </span>
-
           </div>
 
-          {/*
-
-            IMPORTANT:
-
-            html5-qrcode owns this element.
-
-            Do not place React children inside it.
-
-          */}
-
+          {/* html5-qrcode manages this element. */}
           <div
             id={SCANNER_ID}
-            className="min-h-[240px] w-full overflow-hidden"
+            className="min-h-[240px] w-full overflow-hidden bg-black"
           />
 
-          {/* Instructions */}
+          <div className="flex flex-col gap-3 px-4 py-4 sm:flex-row sm:items-center sm:justify-between">
+            <p className="text-xs leading-5 text-white/60">
+              Keep the barcode steady and well lit.
+            </p>
 
-          <p className="px-4 py-2 text-center text-xs text-slate-400">
-            {cameraStarting
-              ? "Please wait..."
-              : "Keep the barcode inside the scanning area."}
-          </p>
-
-          {/* Stop button */}
-
-          {!cameraStarting && (
             <button
               type="button"
               onClick={stopCamera}
-              className="m-4 w-[calc(100%-2rem)] rounded-xl bg-white px-4 py-3.5 min-h-12 font-semibold text-slate-900 transition hover:bg-slate-100"
+              disabled={cameraStarting}
+              className="inline-flex items-center justify-center gap-2 rounded-xl border border-white/20 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-white/10 disabled:opacity-50"
             >
-              Stop Camera
+              <Icon name="stop" className="h-4 w-4" />
+              Stop camera
             </button>
-          )}
-
+          </div>
         </div>
       )}
 
-      {/* =====================================================
-          CONTROLS
-      ====================================================== */}
-
-      <div className="flex flex-col gap-3 sm:flex-row">
-
-        {/* Camera button */}
-
-        {!cameraActive &&
-          !cameraStarting && (
-            <button
-              type="button"
-              onClick={startCamera}
-              disabled={loading}
-              className="rounded-xl border border-green-600 bg-white px-5 py-3.5 min-h-12 font-semibold text-green-700 transition hover:bg-green-50 disabled:cursor-not-allowed disabled:opacity-50"
-            >
-              📷 Scan with Camera
-            </button>
-          )}
-
-        {/* Manual / physical scanner */}
+      {/* Scan controls */}
+      <div className="grid gap-3 sm:grid-cols-[auto_minmax(0,1fr)]">
+        {!cameraActive && !cameraStarting && (
+          <button
+            type="button"
+            onClick={startCamera}
+            disabled={loading}
+            className="inline-flex items-center justify-center gap-2 rounded-xl border border-[#DCE5DE] bg-white px-5 py-3.5 font-semibold text-[#153D30] transition hover:bg-[#F1F6F2] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#153D30] disabled:cursor-not-allowed disabled:opacity-50"
+          >
+            <Icon name="camera" />
+            Scan with camera
+          </button>
+        )}
 
         <form
           onSubmit={handleSubmit}
-          className="flex flex-1 gap-3"
+          className="flex min-w-0 gap-2 sm:gap-3"
         >
+          <div className="relative min-w-0 flex-1">
+            <Icon
+              name="search"
+              className="pointer-events-none absolute left-3.5 top-1/2 h-5 w-5 -translate-y-1/2 text-[#89968E]"
+            />
 
-          <input
-            ref={inputRef}
-            type="text"
-            value={barcode}
-            onChange={(e) =>
-              setBarcode(
-                e.target.value
-              )
-            }
-            placeholder="Scan or enter barcode"
-            autoComplete="off"
-            disabled={
-              loading ||
-              cameraActive ||
-              cameraStarting
-            }
-            className="min-w-0 flex-1 rounded-xl border border-slate-300 px-4 py-3 text-slate-900 outline-none transition focus:border-green-500 focus:ring-2 focus:ring-green-100 disabled:bg-slate-100"
-          />
+            <input
+              ref={inputRef}
+              type="text"
+              inputMode="text"
+              autoComplete="off"
+              spellCheck={false}
+              value={barcode}
+              onChange={(event) => setBarcode(event.target.value)}
+              placeholder="Scan or enter barcode"
+              aria-label="Product barcode"
+              disabled={loading || cameraActive || cameraStarting}
+              className="h-full min-h-[50px] w-full min-w-0 rounded-xl border border-[#DCE5DE] bg-white py-3 pl-11 pr-3 text-sm text-[#17231F] outline-none transition placeholder:text-[#9AA69F] focus:border-[#15803D] focus:ring-4 focus:ring-[#15803D]/10 disabled:cursor-not-allowed disabled:bg-[#F1F4F2]"
+            />
+          </div>
 
           <button
             type="submit"
@@ -734,100 +557,158 @@ const Scanner = ({ onProductFound }) => {
               cameraStarting ||
               !barcode.trim()
             }
-            className="rounded-xl bg-green-600 px-5 py-3.5 min-h-12 font-semibold text-white transition hover:bg-green-700 disabled:cursor-not-allowed disabled:opacity-50"
+            className="inline-flex shrink-0 items-center justify-center gap-2 rounded-xl bg-[#153D30] px-4 py-3 font-semibold text-white transition hover:bg-[#205541] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#153D30] focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 sm:px-5"
           >
-            {loading
-              ? "Searching..."
-              : "Find Product"}
+            {loading ? (
+              <span className="h-5 w-5 animate-spin rounded-full border-2 border-white/40 border-t-white" />
+            ) : (
+              <Icon name="search" className="h-4 w-4" />
+            )}
+            <span className="hidden sm:inline">
+              {loading ? "Searching..." : "Find product"}
+            </span>
+            <span className="sm:hidden">
+              {loading ? "Wait..." : "Find"}
+            </span>
           </button>
-
         </form>
-
       </div>
 
-      {/* =====================================================
-          DETECTED BARCODE
-      ====================================================== */}
-
+      {/* Detected barcode */}
       {detectedBarcode && (
-        <div className="mt-4 rounded-xl border border-blue-200 bg-blue-50 px-4 py-3">
-
-          <p className="text-xs font-semibold uppercase tracking-wide text-blue-500">
-            Detected Barcode
+        <div className="rounded-xl border border-[#DCE5DE] bg-white p-4">
+          <p className="text-xs font-semibold uppercase tracking-wider text-[#89968E]">
+            Last detected barcode
           </p>
-
-          <p className="mt-1 break-all font-mono text-lg font-bold text-blue-900">
+          <p className="mt-1 break-all font-mono text-lg font-bold text-[#153D30]">
             {detectedBarcode}
           </p>
-
         </div>
       )}
 
-      {/* =====================================================
-          LOADING
-      ====================================================== */}
-
-      {loading && (
-        <div className="mt-4 rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-600">
-          🔎 Searching for product...
+      {/* Success message */}
+      {notice && !error && (
+        <div
+          role="status"
+          className="flex items-start gap-3 rounded-xl border border-emerald-200 bg-emerald-50 p-4 text-sm text-emerald-800"
+        >
+          <Icon name="check" className="mt-0.5 h-5 w-5 shrink-0" />
+          <div className="min-w-0 flex-1 leading-5">{notice}</div>
         </div>
       )}
 
-      {/* =====================================================
-          ERROR
-      ====================================================== */}
-
+      {/* Product lookup error */}
       {error && (
-        <div className="mt-4 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+        <div
+          role="alert"
+          className="rounded-xl border border-red-200 bg-red-50 p-4"
+        >
+          <div className="flex items-start gap-3">
+            <Icon name="alert" className="mt-0.5 h-5 w-5 shrink-0 text-red-600" />
 
-          <p className="font-semibold">
-            Product Lookup Failed
-          </p>
+            <div className="min-w-0 flex-1">
+              <p className="font-semibold text-red-800">
+                Unable to complete scan
+              </p>
+              <p className="mt-1 break-words text-sm leading-5 text-red-700">
+                {error}
+              </p>
+            </div>
 
-          <p className="mt-1">
-            {error}
-          </p>
-
+            <button
+              type="button"
+              onClick={resetScanner}
+              className="inline-flex shrink-0 items-center gap-1.5 rounded-lg border border-red-200 bg-white px-3 py-2 text-xs font-semibold text-red-700 transition hover:bg-red-100"
+            >
+              <Icon name="refresh" className="h-3.5 w-3.5" />
+              Reset
+            </button>
+          </div>
         </div>
       )}
 
-      {/* =====================================================
-          HELP
-      ====================================================== */}
+      {/* Last successful lookup */}
+      {lastFoundProduct && (
+        <div className="overflow-hidden rounded-2xl border border-[#DCE5DE] bg-white">
+          <div className="flex items-center gap-3 border-b border-[#E2E9E4] bg-[#F7FAF7] p-4">
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#D9F99D] text-[#153D30]">
+              <Icon name="check" className="h-5 w-5" />
+            </div>
 
-      <div className="mt-4 rounded-xl bg-slate-50 px-4 py-3">
+            <div className="min-w-0 flex-1">
+              <p className="text-xs font-semibold uppercase tracking-wider text-[#15803D]">
+                Product recognized
+              </p>
+              <p className="mt-1 break-words font-bold text-[#17231F]">
+                {lastFoundProduct.name || "Product"}
+              </p>
+            </div>
+          </div>
 
-        <p className="text-sm font-medium text-slate-700">
-          How to scan
-        </p>
+          <div className="flex flex-wrap items-center justify-between gap-3 p-4">
+            <div>
+              <p className="text-xs text-[#89968E]">Unit price</p>
+              <p className="mt-1 text-xl font-bold text-[#153D30]">
+                ₹{Number(lastFoundProduct.price || 0).toFixed(2)}
+              </p>
+            </div>
 
-        <ul className="mt-2 space-y-1 text-xs text-slate-500">
+            <button
+              type="button"
+              onClick={resetScanner}
+              className="rounded-xl border border-[#DCE5DE] px-4 py-2.5 text-sm font-semibold text-[#153D30] transition hover:bg-[#F5F8F6]"
+            >
+              Scan another product
+            </button>
+          </div>
+        </div>
+      )}
 
-          <li>
-            📷 Use your camera to scan a barcode.
-          </li>
+      {/* Helpful instructions */}
+      <div className="rounded-2xl border border-[#E2E9E4] bg-white p-4 sm:p-5">
+        <h3 className="font-semibold text-[#17231F]">
+          Scanning tips
+        </h3>
 
-          <li>
-            💡 Make sure camera permission is enabled.
-          </li>
+        <div className="mt-4 grid gap-4 sm:grid-cols-3">
+          <div className="flex items-start gap-3">
+            <Icon name="camera" className="mt-0.5 h-5 w-5 shrink-0 text-[#205541]" />
+            <div>
+              <p className="text-sm font-medium text-[#17231F]">
+                Use good lighting
+              </p>
+              <p className="mt-1 text-xs leading-5 text-[#718078]">
+                Avoid glare and keep the barcode in focus.
+              </p>
+            </div>
+          </div>
 
-          <li>
-            🎯 Keep the barcode inside the scanning area.
-          </li>
+          <div className="flex items-start gap-3">
+            <Icon name="barcode" className="mt-0.5 h-5 w-5 shrink-0 text-[#205541]" />
+            <div>
+              <p className="text-sm font-medium text-[#17231F]">
+                Align the barcode
+              </p>
+              <p className="mt-1 text-xs leading-5 text-[#718078]">
+                Keep the complete barcode visible in the scan area.
+              </p>
+            </div>
+          </div>
 
-          <li>
-            🔌 USB/Bluetooth barcode scanners are supported.
-          </li>
-
-          <li>
-            ⌨️ You can also enter the barcode manually.
-          </li>
-
-        </ul>
-
+          <div className="flex items-start gap-3">
+            <Icon name="keyboard" className="mt-0.5 h-5 w-5 shrink-0 text-[#205541]" />
+            <div>
+              <p className="text-sm font-medium text-[#17231F]">
+                Use manual entry
+              </p>
+              <p className="mt-1 text-xs leading-5 text-[#718078]">
+                USB scanners and manual barcode entry are supported.
+              </p>
+            </div>
+          </div>
+        </div>
       </div>
-
-    </div>
+    </section>
   );
 };
 
