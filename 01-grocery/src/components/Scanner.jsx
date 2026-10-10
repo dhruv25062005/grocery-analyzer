@@ -671,7 +671,7 @@ const Scanner = ({ onProductFound }) => {
             <button
               type="button"
               onClick={stopCamera}
-              className="m-4 w-[calc(100%-2rem)] rounded-xl bg-white px-4 py-3 font-semibold text-slate-900 transition hover:bg-slate-100"
+              className="m-4 w-[calc(100%-2rem)] rounded-xl bg-white px-4 py-3.5 min-h-12 font-semibold text-slate-900 transition hover:bg-slate-100"
             >
               Stop Camera
             </button>
@@ -694,7 +694,7 @@ const Scanner = ({ onProductFound }) => {
               type="button"
               onClick={startCamera}
               disabled={loading}
-              className="rounded-xl border border-green-600 bg-white px-5 py-3 font-semibold text-green-700 transition hover:bg-green-50 disabled:cursor-not-allowed disabled:opacity-50"
+              className="rounded-xl border border-green-600 bg-white px-5 py-3.5 min-h-12 font-semibold text-green-700 transition hover:bg-green-50 disabled:cursor-not-allowed disabled:opacity-50"
             >
               📷 Scan with Camera
             </button>
@@ -734,7 +734,7 @@ const Scanner = ({ onProductFound }) => {
               cameraStarting ||
               !barcode.trim()
             }
-            className="rounded-xl bg-green-600 px-5 py-3 font-semibold text-white transition hover:bg-green-700 disabled:cursor-not-allowed disabled:opacity-50"
+            className="rounded-xl bg-green-600 px-5 py-3.5 min-h-12 font-semibold text-white transition hover:bg-green-700 disabled:cursor-not-allowed disabled:opacity-50"
           >
             {loading
               ? "Searching..."

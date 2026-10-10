@@ -47,17 +47,17 @@ function Home() {
   };
 
   return (
-    <main className="min-h-[calc(100vh-73px)] bg-slate-50">
-      <div className="mx-auto max-w-7xl px-6 py-10">
+    <main className="min-h-[calc(100dvh-64px)] bg-slate-50 pb-6 sm:pb-0">
+      <div className="mx-auto max-w-7xl px-4 py-5 sm:px-6 sm:py-8 lg:py-10">
 
         {/* Header */}
-        <div className="mb-10">
+        <div className="mb-6 sm:mb-10">
           <p className="mb-2 text-sm font-semibold uppercase tracking-wider text-green-600">
             Self Checkout
           </p>
 
-          <h1 className="text-4xl font-bold text-slate-900">
-            Welcome to SmartCart
+          <h1 className="text-2xl font-extrabold tracking-tight text-slate-900 sm:text-4xl">
+            What are we shopping for?
           </h1>
 
           <p className="mt-2 text-slate-500">
@@ -66,11 +66,11 @@ function Home() {
         </div>
 
         {/* Main Grid */}
-        <div className="grid gap-8 lg:grid-cols-3">
+        <div className="grid grid-cols-1 gap-5 lg:grid-cols-3 lg:gap-8">
 
           {/* Scanner Section */}
           <div className="lg:col-span-2">
-            <div className="rounded-2xl border border-slate-200 bg-white p-8 shadow-sm">
+            <div className="rounded-2xl border border-slate-200 bg-white p-4 sm:p-8 shadow-sm">
 
               <div className="mb-6 flex items-center gap-4">
                 <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-green-100 text-2xl">
