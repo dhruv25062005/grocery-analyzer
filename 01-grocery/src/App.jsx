@@ -36,6 +36,10 @@ function Home() {
 
   const handleProductFound = (foundProduct) => {
     setProduct(foundProduct);
+
+    if (Number(foundProduct.stock) > 0) {
+      addToCart(foundProduct);
+    }
   };
 
   const handleAddToCart = (product) => {
