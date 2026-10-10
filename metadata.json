@@ -1,0 +1,8 @@
+{
+  "name": "SmartCart - Smart Grocery Checkout",
+  "description": "Smart grocery barcode scanning, cart management, checkout and inventory analytics.",
+  "permissions": [],
+  "capabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none">
+  <rect width="64" height="64" rx="16" fill="#16a34a"/>
+  <!-- Shopping Cart Base -->
+  <path d="M16 18h6l4.8 21.6a2 2 0 0 0 2 1.6h20.4a2 2 0 0 0 1.95-1.55l3.2-12.8a2 2 0 0 0-1.95-2.45H25" stroke="#ffffff" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+  <!-- Wheels -->
+  <circle cx="30" cy="49" r="3" fill="#ffffff"/>
+  <circle cx="46" cy="49" r="3" fill="#ffffff"/>
+  <!-- Barcode Signal Rays -->
+  <path d="M34 26v6M38 24v10M42 27v4" stroke="#86efac" stroke-width="2.5" stroke-linecap="round"/>
+</svg>
